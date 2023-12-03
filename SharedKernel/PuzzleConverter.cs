@@ -136,5 +136,6 @@ namespace AdventOfCode2022.SharedKernel
 
             return adjacent;
         }
+
     }
 }
