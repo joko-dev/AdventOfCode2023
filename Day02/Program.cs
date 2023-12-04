@@ -57,7 +57,7 @@ namespace Day02
         private static List<Cubes> getCubeList(string line)
         {
             List<Cubes>  cubesPlay = new List<Cubes>();
-            bool possible = false;
+            
             line = line.Remove(0, line.IndexOf(':') + 2);
             line = line.Replace(";", "").Replace(",", "");
 
