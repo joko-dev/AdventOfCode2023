@@ -6,8 +6,8 @@ namespace Day04
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 3: Gear Ratios"));
-            Console.WriteLine("Engine schematic: ");
+            Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 4: Scratchcards"));
+            Console.WriteLine("Scratchcards: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), true);
 
             List<int> pointsScratchcard = getPointsScratchcard(puzzleInput.Lines);
