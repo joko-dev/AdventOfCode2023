@@ -17,7 +17,7 @@ otherwise any custom file. The console will prompt the result for each subtask.
 :star::star: [Day  5](/AdventOfCode2023/Day05) \
 :star::star: [Day  6](/AdventOfCode2023/Day06) \
 :star::star: [Day  7](/AdventOfCode2023/Day07) \
-:x::x: [Day  8](/AdventOfCode2023/Day08) \
+:star::x: [Day  8](/AdventOfCode2023/Day08) \
 :x::x: [Day  9](/AdventOfCode2023/Day09) \
 :x::x: [Day 10](/AdventOfCode2023/Day10) \
 :x::x: [Day 11](/AdventOfCode2023/Day11) \
