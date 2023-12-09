@@ -12,55 +12,127 @@ namespace Day05
             Console.WriteLine("Almanac: ");
             PuzzleInput puzzleInput = new(PuzzleOutputFormatter.getPuzzleFilePath(), false);
 
-            extractMappings(puzzleInput.Lines, out List<Int64> seeds, out List<Mapping> seedToSoil, out List<Mapping> soilToFertilizer, out List<Mapping> fertilizerToWater, out List<Mapping> waterToLight,
+            extractMappings(puzzleInput.Lines, out List<Range> seeds, out List<Mapping> seedToSoil, out List<Mapping> soilToFertilizer, out List<Mapping> fertilizerToWater, out List<Mapping> waterToLight,
                                 out List<Mapping> lightToTemperature, out List<Mapping> temperatureToHumidity, out List<Mapping> humidityToLocation);
 
-            List<Int64> locationNumbers = determineLocationNumbers(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation);
-            Console.WriteLine("Smallest location number: {0}", locationNumbers.Min());
+            Int64 minLocation = determineLocationNumbers(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation);
+            Console.WriteLine("Smallest location number: {0}", minLocation);
 
-            locationNumbers = determineLocationNumberSeedRange(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation);
-            Console.WriteLine("Smallest location number: {0}", locationNumbers.Min());
+            minLocation = determineLocationNumberSeedRange(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation);
+            Console.WriteLine("Smallest location number: {0}", minLocation);
         }
 
-        private static List<Int64> determineLocationNumberSeedRange(List<Int64> seedsRange, List<Mapping> seedToSoil, List<Mapping> soilToFertilizer, List<Mapping> fertilizerToWater, List<Mapping> waterToLight, List<Mapping> lightToTemperature, List<Mapping> temperatureToHumidity, List<Mapping> humidityToLocation)
+        private static Int64 determineLocationNumberSeedRange(List<Range> seeds, List<Mapping> seedToSoil, List<Mapping> soilToFertilizer, List<Mapping> fertilizerToWater, List<Mapping> waterToLight, List<Mapping> lightToTemperature, List<Mapping> temperatureToHumidity, List<Mapping> humidityToLocation)
         {
             List<Int64> locationNumbers = new List<Int64>();
+            List<Range> seedRange = new List<Range>();
 
-            for (int i = 0; i < seedsRange.Count; i=i+2)
+            for (int i = 0; i < seeds.Count; i=i+2)
             {
-                List<Int64> seeds = new List<Int64>();
-                for(Int64 seed = seedsRange[i]; seed < seedsRange[i] + seedsRange[i + 1]; seed++)
-                {
-                    seeds.Add(seed);
-                }
-                locationNumbers.Add(determineLocationNumbers(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation).Min());
+                Range seed = new Range(seeds[i].Start, seeds[i+1].Start);
+                seedRange.Add(seed);
             }
 
-            return locationNumbers;
+            locationNumbers.Add(determineLocationNumbers(seedRange, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight, lightToTemperature, temperatureToHumidity, humidityToLocation));
+
+            return locationNumbers.Min();
         }
 
-        private static List<Int64> determineLocationNumbers(List<Int64> seeds, List<Mapping> seedToSoil, List<Mapping> soilToFertilizer, List<Mapping> fertilizerToWater, List<Mapping> waterToLight,
+        private static Int64 determineLocationNumbers(List<Range> seeds, List<Mapping> seedToSoil, List<Mapping> soilToFertilizer, List<Mapping> fertilizerToWater, List<Mapping> waterToLight,
                                             List<Mapping> lightToTemperature, List<Mapping> temperatureToHumidity, List<Mapping> humidityToLocation)
         {
-            List<Int64> locationNumbers = new List<Int64>();
+            List<Range> soils = new List<Range>();
+            List<Range> fertilizers = new List<Range>();
+            List<Range> waters = new List<Range >();
+            List<Range> lights = new List<Range>();
+            List<Range> temperatures = new List<Range>();
+            List<Range> humidities = new List<Range>();
+            List<Range> locations = new List<Range>();
 
-            foreach (Int64 seed in seeds)
+            foreach(Range seed in seeds)
             {
-                Int64 soil = getMappingValue(seed, seedToSoil);
-                Int64 fertilizer = getMappingValue(soil, soilToFertilizer);
-                Int64 water = getMappingValue(fertilizer, fertilizerToWater);
-                Int64 light = getMappingValue(water, waterToLight);
-                Int64 temperature = getMappingValue(light, lightToTemperature);
-                Int64 humidity = getMappingValue(temperature, temperatureToHumidity);
-                Int64 location = getMappingValue(humidity, humidityToLocation);
-
-                locationNumbers.Add(location);
+                 soils.AddRange(getMappingValue(seed, seedToSoil));
+            }
+            
+            foreach (Range soil in soils)
+            {
+                fertilizers.AddRange(getMappingValue(soil, soilToFertilizer));
+            }
+            foreach (Range fertilizer in fertilizers)
+            {
+                waters.AddRange(getMappingValue(fertilizer, fertilizerToWater));
+            }
+            foreach (Range water in waters)
+            {
+                lights.AddRange(getMappingValue(water, waterToLight));
+            }
+            foreach (Range light in lights)
+            {
+                temperatures.AddRange(getMappingValue(light, lightToTemperature));
+            }
+            foreach (Range temperature in temperatures)
+            {
+                humidities.AddRange(getMappingValue(temperature, temperatureToHumidity));
+            }
+            foreach (Range humidity in humidities)
+            {
+                locations.AddRange(getMappingValue(humidity, humidityToLocation));
             }
 
-            return locationNumbers;
+            return locations.Min( l=> l.Start);
         }
 
-        private static void extractMappings(List<string> lines, out List<Int64> seeds, out List<Mapping> seedToSoil, out List<Mapping> soilToFertilizer, out List<Mapping> fertilizerToWater, out List<Mapping> waterToLight,
+        private static List<Range> getMappingValue(Range sourceRange, List<Mapping> mapping)
+        {
+            List<Range> result = new List<Range>();
+
+            // range is fully included in one map
+            Mapping? map = mapping.Where(m => m.Source.Start <= sourceRange.Start && m.Source.End >= sourceRange.End).FirstOrDefault();
+            if (map is not null)
+            {
+                result.Add(new Range(sourceRange.Start, map, sourceRange.Length));
+            }
+            else
+            {
+                // range does not overlap with any map
+                map = mapping.Where(m => sourceRange.Start <= m.Source.End && sourceRange.End >= m.Source.Start).FirstOrDefault();
+                if (map is null)
+                {
+                    result.Add(new Range(sourceRange.Start, sourceRange.Length));
+                }
+                else
+                {
+                    // range is overlapping, start of range is smaller than map
+                    map = mapping.Where(m => sourceRange.Start < m.Source.Start && sourceRange.End >= m.Source.Start && sourceRange.End <= m.Source.End).OrderBy(m => m.DestinationStart).FirstOrDefault();
+                    if (map is not null)
+                    {
+                        result.AddRange(getMappingValue(new Range(sourceRange.Start, map.Source.Start - sourceRange.Start), mapping));
+                        result.AddRange(getMappingValue(new Range(map.Source.Start, sourceRange.End - map.Source.Start + 1), mapping));
+                    }
+                    else 
+                    {
+                        // range is overlapping, start of range is greater than map
+                        map = mapping.Where(m => sourceRange.Start >= m.Source.Start && sourceRange.End >= m.Source.Start && sourceRange.Start <= m.Source.End).OrderBy(m => m.DestinationStart).FirstOrDefault();
+                        if (map is not null)
+                        {
+                            result.AddRange(getMappingValue(new Range(sourceRange.Start, map.Source.End - sourceRange.Start + 1), mapping));
+                            result.AddRange(getMappingValue(new Range(map.Source.End + 1, sourceRange.End - map.Source.End), mapping));
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException();
+                        }
+                    }
+                }
+            }
+
+            
+            
+
+            return result;
+        }
+
+        private static void extractMappings(List<string> lines, out List<Range> seeds, out List<Mapping> seedToSoil, out List<Mapping> soilToFertilizer, out List<Mapping> fertilizerToWater, out List<Mapping> waterToLight,
                                             out List<Mapping> lightToTemperature, out List<Mapping> temperatureToHumidity, out List<Mapping> humidityToLocation)
         {
             seeds = extractSeeds(lines[0]);
@@ -92,28 +164,21 @@ namespace Day05
             return mappings;
         }
 
-        private static List<Int64> extractSeeds(string line)
+        private static List<Range> extractSeeds(string line)
         {
+            List<Range> seeds = new List<Range>();
             line = line.Replace("seeds: ", "");
             line = line.Trim();
-
-            return line.Split(' ').Select(n => Int64.Parse(n)).ToList();
-        }
-
-        private static Int64 getMappingValue(Int64 source, List<Mapping> mapping)
-        {
-            Int64 target = source;
-
-            foreach (Mapping map in mapping)
+            List<Int64> values = line.Split(' ').Select(n => Int64.Parse(n)).ToList();
+            foreach (Int64 value in values)
             {
-                if (map.SourceRangeStart <= source && source <= map.SourceRangeStart + map.RangeLength)
-                {
-                    target = map.DestinationRangeStart + (source - map.SourceRangeStart);
-                    break;
-                }
+                Range seed = new Range(value, 1);
+                seeds.Add(seed);
             }
 
-            return target;
+            return seeds;
         }
+
+        
     }
 }
