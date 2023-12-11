@@ -137,5 +137,17 @@ namespace AdventOfCode2022.SharedKernel
             return adjacent;
         }
 
+        public static List<(int x, int y)> getAdjacentPoints<T>(T[,] matrix, (int x, int y) point, bool left, bool right, bool up, bool down)
+        {
+            List<(int x, int y)> adjacent = new List<(int x, int y)>();
+
+            if (left && (point.x > 0)) { adjacent.Add((point.x - 1, point.y)); }
+            if (right && (point.x < matrix.GetLength(0) - 1)) { adjacent.Add((point.x + 1, point.y)); }
+            if (up && (point.y > 0)) { adjacent.Add((point.x, point.y - 1)); }
+            if (down && (point.y < matrix.GetLength(1) - 1)) { adjacent.Add((point.x, point.y + 1)); }
+
+            return adjacent;
+        }
+
     }
 }
