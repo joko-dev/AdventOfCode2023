@@ -15,31 +15,79 @@ namespace Day13
             List<int> columnsLeft = new List<int>();
             foreach(List<string> pattern in patterns)
             {
-                rowsAbove.Add(getHorizontalReflection(pattern));
-                columnsLeft.Add(getVerticalReflection(pattern));
+                char[,] matrix = PuzzleConverter.getInputAsMatrixChar(pattern, null);
+                getReflections( matrix, out int above, out int left, 0, 0);
+                rowsAbove.Add(above);
+                columnsLeft.Add(left);
+            }
+            Console.WriteLine("Summarize: {0}", columnsLeft.Sum() + (rowsAbove.Sum() * 100));
+
+            rowsAbove.Clear();
+            columnsLeft.Clear();
+            foreach (List<string> pattern in patterns)
+            {
+                bool fixedSmudge = false;
+                char[,] matrix = PuzzleConverter.getInputAsMatrixChar(pattern, null);
+                getReflections(matrix, out int originalAbove, out int originalLeft, 0, 0);
+
+                for (int y = 0; y < matrix.GetLength(1); y++)
+                {
+                    for (int x = 0; x < matrix.GetLength(0); x++)
+                    {
+                        char[,] matrixSmudge = matrix.Clone() as char[,];
+                        if (matrixSmudge[x,y] == '#') { matrixSmudge[x, y] = '.'; }
+                        else { matrixSmudge[x, y] = '#'; }
+
+                        if(getReflections(matrixSmudge, out int above, out int left, originalAbove, originalLeft))
+                        {
+                            rowsAbove.Add(above);
+                            columnsLeft.Add(left);
+                            fixedSmudge = true;
+                            break;
+                        }
+                    }
+                    if (fixedSmudge) { break; }
+                }
             }
             Console.WriteLine("Summarize: {0}", columnsLeft.Sum() + (rowsAbove.Sum() * 100));
         }
 
-        private static int getVerticalReflection(List<string> pattern)
+        private static bool getReflections(char[,] matrix, out int rowsAbove, out int columnsLeft, int originalLineAbove, int originalLineLeft)
+        {
+            columnsLeft = 0;
+            rowsAbove = getHorizontalReflection(matrix, originalLineAbove);
+
+            if(rowsAbove == 0)
+            {
+                columnsLeft = getVerticalReflection(matrix, originalLineLeft);
+            }          
+
+            if (rowsAbove > 0 || columnsLeft > 0 )
+            {
+                return true;
+            }
+                
+            return false;
+        }
+
+        private static int getVerticalReflection(char[,] pattern, int original)
         {
             int columnLeft = 0;
-            char[,] matrix = PuzzleConverter.getInputAsMatrixChar(pattern, null);
 
-            for (int mirror = matrix.GetLength(0) - 1; mirror >= 0; mirror--)
+            for (int mirror = pattern.GetLength(0) - 1; mirror >= 0; mirror--)
             {
                 bool perfectMirror = true;
-                for(int y = 0; y < matrix.GetLength(1); y++)
+                for(int y = 0; y < pattern.GetLength(1); y++)
                 {
                     for(int x = mirror - 1; x >= 0; x--)
                     {
                         int mirroredIndex = mirror + (mirror - x - 1);
-                        if (mirroredIndex >= matrix.GetLength(0))
+                        if (mirroredIndex >= pattern.GetLength(0))
                         {
                             break;
                         }
 
-                        if (matrix[x,y] != matrix[mirroredIndex, y])
+                        if (pattern[x,y] != pattern[mirroredIndex, y])
                         {
                             perfectMirror = false;
                             break;
@@ -51,7 +99,7 @@ namespace Day13
                     }
                 }
 
-                if ( perfectMirror )
+                if ( perfectMirror && (mirror != original))
                 {
                     columnLeft = mirror;
                     break;
@@ -60,25 +108,24 @@ namespace Day13
 
             return columnLeft;
         }
-        private static int getHorizontalReflection(List<string> pattern)
+        private static int getHorizontalReflection(char[,] pattern, int original)
         {
             int rowsAbove = 0;
-            char[,] matrix = PuzzleConverter.getInputAsMatrixChar(pattern, null);
 
-            for (int mirror = matrix.GetLength(1) - 1; mirror >= 0; mirror--)
+            for (int mirror = pattern.GetLength(1) - 1; mirror >= 0; mirror--)
             {
                 bool perfectMirror = true;
-                for (int x = 0; x < matrix.GetLength(0); x++)
+                for (int x = 0; x < pattern.GetLength(0); x++)
                 {
                     for (int y = mirror - 1; y >= 0; y--)
                     {
                         int mirroredIndex = mirror + (mirror - y - 1);
-                        if (mirroredIndex >= matrix.GetLength(1))
+                        if (mirroredIndex >= pattern.GetLength(1))
                         {
                             break;
                         }
 
-                        if (matrix[x, y] != matrix[x, mirroredIndex])
+                        if (pattern[x, y] != pattern[x, mirroredIndex])
                         {
                             perfectMirror = false;
                             break;
@@ -90,7 +137,7 @@ namespace Day13
                     }
                 }
 
-                if (perfectMirror)
+                if (perfectMirror && (mirror != original))
                 {
                     rowsAbove = mirror;
                     break;
