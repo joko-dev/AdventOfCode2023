@@ -3,7 +3,7 @@ https://adventofcode.com/
 
 Repo contains all of the used code for solving the tasks, can include some quick hacks and lack of code cleanliness because of lazyness
 
-All projects: .NET 7
+All projects: .NET 8
 
 ## How to run?
 Each day has its own console application. Start the corresponding project and specify the input file ( [1] or [2] for predefined files, 
