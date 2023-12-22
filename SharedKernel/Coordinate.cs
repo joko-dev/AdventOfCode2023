@@ -45,8 +45,13 @@ namespace AdventOfCode2022.SharedKernel
             Move(toMove.X, toMove.Y);
         }
 
-        public bool Equals(Coordinate coordinate)
+        public override bool Equals(object obj)
         {
+            var coordinate = obj as Coordinate;
+            if(coordinate == null) 
+            {
+                return false;
+            }
             return (this.X == coordinate.X && this.Y == coordinate.Y);
         }
 
@@ -71,6 +76,11 @@ namespace AdventOfCode2022.SharedKernel
         public static explicit operator (int x, int y)(Coordinate obj)
         {
             return (obj.X, obj.Y);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
         }
     }
 }

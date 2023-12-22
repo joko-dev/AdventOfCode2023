@@ -148,6 +148,9 @@ namespace AdventOfCode2022.SharedKernel
 
             return adjacent;
         }
-
+        public static bool isPointInMatrix<T>(T[,] matrix, (int x, int y) point)
+        {
+            return (point.x >= 0 && point.x < matrix.GetLength(0) && point.y >= 0 && point.y < matrix.GetLength(1));
+        }
     }
 }
