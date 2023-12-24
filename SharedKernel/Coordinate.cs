@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2022.SharedKernel
 {
+    [Serializable]
+    public class InvalidCoordinateException : Exception
+    {
+        public InvalidCoordinateException() : base() { }
+        public InvalidCoordinateException(string message) : base(message) { }
+        public InvalidCoordinateException(string message, Exception inner) : base(message, inner) { }
+    }
+
     public class Coordinate
     {
 
-        public Coordinate(int X, int Y)
+        public Coordinate(Int64 X, Int64 Y)
         {
             this.X = X;
             this.Y = Y;
@@ -34,7 +42,7 @@ namespace AdventOfCode2022.SharedKernel
             this.Y = coordinate.Y;
         }
 
-        public void Move(int xToMove, int yToMove)
+        public void Move(Int64 xToMove, Int64 yToMove)
         {
             X += xToMove;
             Y += yToMove;
@@ -55,6 +63,22 @@ namespace AdventOfCode2022.SharedKernel
             return (this.X == coordinate.X && this.Y == coordinate.Y);
         }
 
+        public Coordinate GetAdjacentCoordinate(Move.DirectionType direction)
+        {
+            int xToAdd = 0;
+            int yToAdd = 0;
+
+            switch (direction)
+            {
+                case SharedKernel.Move.DirectionType.Left: { xToAdd = -1; break; }
+                case SharedKernel.Move.DirectionType.Right: { xToAdd = 1; break; }
+                case SharedKernel.Move.DirectionType.Up: { yToAdd = -1; break; }
+                case SharedKernel.Move.DirectionType.Down: { yToAdd = 1; break; }
+            }
+
+            return new Coordinate(this.X + xToAdd, this.Y + yToAdd);
+        }
+
         public List<Coordinate> GetAdjacentCoordinates()
         {
             List<Coordinate> adjacent = new List<Coordinate>();
@@ -70,12 +94,17 @@ namespace AdventOfCode2022.SharedKernel
             return adjacent;
         }
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public Int64 X { get; private set; }
+        public Int64 Y { get; private set; }
+
+        public static explicit operator (Int64 x, Int64 y)(Coordinate obj)
+        {
+            return (obj.X, obj.Y);
+        }
 
         public static explicit operator (int x, int y)(Coordinate obj)
         {
-            return (obj.X, obj.Y);
+            return ((int)obj.X, (int)obj.Y);
         }
 
         public override int GetHashCode()

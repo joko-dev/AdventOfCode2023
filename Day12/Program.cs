@@ -1,10 +1,14 @@
 ﻿using AdventOfCode2022.SharedKernel;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Day12
 {
     internal class Program
     {
+        static Dictionary<string, int> cache = new Dictionary<string, int>();
+
         static void Main(string[] args)
         {
             Console.WriteLine(PuzzleOutputFormatter.getPuzzleCaption("Day 12: Hot Springs"));
@@ -44,9 +48,12 @@ namespace Day12
 
         private static int gePossibleArrangements(string arrangement, List<int> group)
         {
-            //Bruteforcing should be possible for part 1. Better solution idea: Filling from left, when solution not possible we can end early. 
-            //Reddit-Hint: Memoization
             int possibleArrangements = 0;
+
+            if(cache.ContainsKey(arrangement))
+            {
+                return cache[arrangement];
+            }
 
             if (arrangement.Contains('?'))
             {
@@ -61,9 +68,17 @@ namespace Day12
 
                 stringBuilder[firstQuestionmark] = '#';
                 possibleArrangements += gePossibleArrangements(stringBuilder.ToString(), group);
-
+                if (!cache.ContainsKey(stringBuilder.ToString()))
+                {
+                    cache.Add(stringBuilder.ToString(), possibleArrangements);
+                }
+                
                 stringBuilder[firstQuestionmark] = '.';
                 possibleArrangements += gePossibleArrangements(stringBuilder.ToString(), group);
+                if (!cache.ContainsKey(stringBuilder.ToString()))
+                {
+                    cache.Add(stringBuilder.ToString(), possibleArrangements);
+                }
             }
             else if (validateArrangement(arrangement, group)) { possibleArrangements++; }
 

@@ -1,7 +1,7 @@
 # 🎄 AdventOfCode2023 🎄
 https://adventofcode.com/
 
-Repo contains all of the used code for solving the tasks, can include some quick hacks and lack of code cleanliness because of lazyness
+Repo contains all of the used code for solving the tasks, can include some quick hacks and lack of code cleanliness because of lazyness. In case of standard algorithms there is some basic info provided in the progression-overview.
 
 All projects: .NET 8
 
@@ -26,8 +26,8 @@ otherwise any custom file. The console will prompt the result for each subtask.
 :star::star: [Day 14](/AdventOfCode2023/Day14) \
 :star::star: [Day 15](/AdventOfCode2023/Day15) \
 :star::star: [Day 16](/AdventOfCode2023/Day16) \
-:star::star: [Day 17](/AdventOfCode2023/Day17) \
-:x::x: [Day 18](/AdventOfCode2023/Day18) \
+:star::star: [Day 17](/AdventOfCode2023/Day17) (Dijkstra-Algorithm) \
+:star::x: [Day 18](/AdventOfCode2023/Day18) (Flood Fill / Shoelace formula) \
 :x::x: [Day 19](/AdventOfCode2023/Day19) \
 :x::x: [Day 20](/AdventOfCode2023/Day20) \
 :x::x: [Day 21](/AdventOfCode2023/Day21) \

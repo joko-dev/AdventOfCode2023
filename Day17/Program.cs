@@ -49,7 +49,7 @@ namespace Day17
 
                 foreach (var adjacent in GetAdjacentStates(state, minMoves, maxMoves))
                 {
-                    if(PuzzleConverter.isPointInMatrix(heatMap, ((int x, int y))adjacent.move.Coordinate) && (cost[state] + heatMap[adjacent.move.Coordinate.X, adjacent.move.Coordinate.Y] < cost[adjacent]))
+                    if(PuzzleConverter.isPointInMatrix(heatMap, ((Int64 x, Int64 y))adjacent.move.Coordinate) && (cost[state] + heatMap[adjacent.move.Coordinate.X, adjacent.move.Coordinate.Y] < cost[adjacent]))
                     {
                         cost[adjacent] = cost[state] + heatMap[adjacent.move.Coordinate.X, adjacent.move.Coordinate.Y];
                         heap.Enqueue(adjacent, cost[adjacent]);

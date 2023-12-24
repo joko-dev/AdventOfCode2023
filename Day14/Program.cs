@@ -104,7 +104,7 @@ namespace Day14
 
         private static void slideNorth(char[,] platformTilted, Coordinate coordinate)
         {
-            for(int y = coordinate.Y; y >= 1; y--)
+            for(int y = (int)coordinate.Y; y >= 1; y--)
             {
                 if (platformTilted[coordinate.X, y - 1] == '.')
                 {
@@ -120,7 +120,7 @@ namespace Day14
 
         private static void slideSouth(char[,] platformTilted, Coordinate coordinate)
         {
-            for (int y = coordinate.Y; y <= platformTilted.GetLength(1) - 2; y++)
+            for (int y = (int)coordinate.Y; y <= platformTilted.GetLength(1) - 2; y++)
             {
                 if (platformTilted[coordinate.X, y + 1] == '.')
                 {
@@ -136,7 +136,7 @@ namespace Day14
 
         private static void slideWest(char[,] platformTilted, Coordinate coordinate)
         {
-            for (int x = coordinate.X; x > 0; x--)
+            for (int x = (int)coordinate.X; x > 0; x--)
             {
                 if (platformTilted[x - 1, coordinate.Y] == '.')
                 {
@@ -152,7 +152,7 @@ namespace Day14
 
         private static void slideEast(char[,] platformTilted, Coordinate coordinate)
         {
-            for (int x = coordinate.X; x <= platformTilted.GetLength(0) - 2; x++)
+            for (int x = (int)coordinate.X; x <= platformTilted.GetLength(0) - 2; x++)
             {
                 if (platformTilted[x + 1, coordinate.Y] == '.')
                 {

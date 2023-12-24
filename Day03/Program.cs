@@ -59,7 +59,7 @@ namespace Day03
         {
             int startX = 0;
 
-            for (int x = point.X; x >= 0; x--)
+            for (int x = (int)point.X; x >= 0; x--)
             {
                 if (Char.IsDigit(engine[x, point.Y]))
                 {
@@ -77,7 +77,7 @@ namespace Day03
         private static int getFullPartNumber(char[,] engine, Coordinate startPoint)
         {
             string part = "";
-            for (int x = startPoint.X; x < engine.GetLength(0); x++)
+            for (int x = (int)startPoint.X; x < engine.GetLength(0); x++)
             {
                 if (Char.IsDigit(engine[x, startPoint.Y]))
                 {
